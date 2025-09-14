@@ -1,0 +1,5 @@
+# DoctorId,Name,Password,Specialty
+
+20001,Dr. Andrew Kim,dr20001,Pediatrics
+20002,Dr. Sarah Eren,dr20002,Cardiology
+20003,Dr. Michael Smith,dr20003,Orthopedics

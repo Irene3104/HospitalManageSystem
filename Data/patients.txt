@@ -1,0 +1,17 @@
+# PatientId,Name,Password,Age,Gender,DoctorId
+
+10001,John Smith,p1001,10,M,20001
+10002,Emily Brown,p1002,8,F,20001
+10003,Michael Johnson,p1003,13,M,20001
+10004,Hannah Wilson,p1004,27,F,20002
+10005,James Kim,p1005,35,M,20002
+10006,Sophie Lee,p1006,29,F,20002
+10007,Daniel Park,p1007,31,M,20003
+10008,Olivia Taylor,p1008,40,F,20003
+10009,Minjun Choi,p1009,33,M,20003
+10010,Charlotte Nguyen,p1010,7,F,20001
+10011,Lucas Davis,p1011,26,M,20001
+10012,Alice Wong,p1012,38,F,20002
+10013,Seoyoon Kim,p1013,45,F,20003
+10014,Ethan Thompson,p1014,36,M,20001
+10015,Grace Miller,p1015,41,F,20002
