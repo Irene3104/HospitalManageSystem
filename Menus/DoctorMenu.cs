@@ -65,7 +65,7 @@ namespace DotnetHospital.Menus
         private static void ShowDoctorDetails(Doctor doctor)
         {
             ConsoleUI.DrawHeader("DOTNET Hospital Management System", "My Details");
-            ConsoleUI.Log($"{doctor.Name}'s Details", ConsoleColor.Green);
+            ConsoleUI.Log($"{doctor.DisplayName}'s Details", ConsoleColor.Green);
             Console.WriteLine();
 
             int nameWidth = 20;
@@ -84,7 +84,7 @@ namespace DotnetHospital.Menus
         private static void ShowPatients(Doctor doctor, List<Patient> patients)
         {
             ConsoleUI.DrawHeader("DOTNET Hospital Management System", "My Patients");
-            ConsoleUI.Log($"Patients assigned to {doctor.Name}:", ConsoleColor.Green);
+                ConsoleUI.Log($"Patients assigned to {doctor.DisplayName}:", ConsoleColor.Green);
             Console.WriteLine();
             
             var assignedPatients = patients.Where(p => p.DoctorId == doctor.Id).ToList();
@@ -107,7 +107,7 @@ namespace DotnetHospital.Menus
                 foreach (var patient in assignedPatients)
                 {
                     var addr = ConsoleUI.Truncate(patient.GetFormattedAddress(), addressWidth);
-                    Console.WriteLine($"{patient.Name.PadRight(patientWidth)} | {doctor.Name.PadRight(doctorWidth)} | {patient.Email.PadRight(emailWidth)} | {patient.Phone.PadRight(phoneWidth)} | {addr}");
+                    Console.WriteLine($"{patient.Name.PadRight(patientWidth)} | {doctor.DisplayName.PadRight(doctorWidth)} | {patient.Email.PadRight(emailWidth)} | {patient.Phone.PadRight(phoneWidth)} | {addr}");
                 }
             }
             
@@ -117,7 +117,7 @@ namespace DotnetHospital.Menus
         private static void ShowAppointments(Doctor doctor, List<Appointment> appointments, List<Patient> patients)
         {
             ConsoleUI.DrawHeader("DOTNET Hospital Management System", "All Appointments");
-            ConsoleUI.Log($"Appointments for {doctor.Name}", ConsoleColor.Green);
+            ConsoleUI.Log($"Appointments for {doctor.DisplayName}", ConsoleColor.Green);
             Console.WriteLine();
             
             var doctorAppointments = appointments.Where(a => a.DoctorId == doctor.Id).ToList();
@@ -140,7 +140,7 @@ namespace DotnetHospital.Menus
                     var patient = patients.FirstOrDefault(p => p.Id == appointment.PatientId);
                     var patientName = patient?.Name ?? "Unknown Patient";
                     var note = ConsoleUI.Truncate(appointment.Note ?? string.Empty, descWidth);
-                    Console.WriteLine($"{doctor.Name.PadRight(doctorWidth)} | {patientName.PadRight(patientWidth)} | {note}");
+                    Console.WriteLine($"{doctor.DisplayName.PadRight(doctorWidth)} | {patientName.PadRight(patientWidth)} | {note}");
                 }
             }
             
@@ -226,7 +226,7 @@ namespace DotnetHospital.Menus
             
             if (patientAppointments.Count == 0)
             {
-                ConsoleUI.Warning($"No appointments found between {doctor.Name} and {patient.Name}.");
+                ConsoleUI.Warning($"No appointments found between {doctor.DisplayName} and {patient.Name}.");
             }
             else
             {
@@ -240,7 +240,7 @@ namespace DotnetHospital.Menus
                 foreach (var appointment in patientAppointments)
                 {
                     var note = ConsoleUI.Truncate(appointment.Note ?? string.Empty, descWidth);
-                    Console.WriteLine($"{doctor.Name.PadRight(doctorWidth)} | {patient.Name.PadRight(patientWidth)} | {note}");
+                    Console.WriteLine($"{doctor.DisplayName.PadRight(doctorWidth)} | {patient.Name.PadRight(patientWidth)} | {note}");
                 }
             }
             

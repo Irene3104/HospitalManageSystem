@@ -5,6 +5,18 @@
     {
         public string Specialty { get; set; }
 
+        // Display helper to ensure a unified "Dr. <Name>" label without double prefixing
+        public string DisplayName
+        {
+            get
+            {
+                var n = Name ?? string.Empty;
+                return n.TrimStart().StartsWith("Dr.", System.StringComparison.OrdinalIgnoreCase)
+                    ? n
+                    : $"Dr. {n}";
+            }
+        }
+
         public Doctor(string name, string password, string specialty, 
                      string email = "", string phone = "", string streetNumber = "", string street = "", 
                      string city = "", string state = "", int? id = null)
