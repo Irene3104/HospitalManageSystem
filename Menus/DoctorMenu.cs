@@ -27,7 +27,7 @@ namespace DotnetHospital.Menus
                     "Exit"
                 };
                 
-                ConsoleUI.DrawMenu("Please choose an option:", options);
+                ConsoleUI.DrawMenu("Please choose an option:", options, ConsoleColor.Green, includeZeroExit: false);
                 
                 Console.Write("Enter your choice: ");
                 var choice = Console.ReadLine();
@@ -51,7 +51,6 @@ namespace DotnetHospital.Menus
                         break;
                     case "6":
                         return; // Return to login
-                    case "0":
                     case "7":
                         Environment.Exit(0);
                         break;
@@ -68,11 +67,17 @@ namespace DotnetHospital.Menus
             ConsoleUI.DrawHeader("DOTNET Hospital Management System", "My Details");
             ConsoleUI.Log($"{doctor.Name}'s Details", ConsoleColor.Green);
             Console.WriteLine();
-            
-            Console.WriteLine($"Doctor ID: {doctor.Id}");
-            Console.WriteLine($"Name: {doctor.Name}");
-            Console.WriteLine($"Specialty: {doctor.Specialty}");
-            
+
+            int nameWidth = 20;
+            int emailWidth = 28;
+            int phoneWidth = 15;
+            int addressWidth = ConsoleUI.ComputeFlexibleWidth(nameWidth + emailWidth + phoneWidth, 3, 20, 60);
+            string header = $"{"Name".PadRight(nameWidth)} | {"Email Address".PadRight(emailWidth)} | {"Phone".PadRight(phoneWidth)} | {"Address".PadRight(addressWidth)}";
+            Console.WriteLine(header);
+            Console.WriteLine(new string('-', header.Length));
+            var addr = ConsoleUI.Truncate(doctor.GetFormattedAddress(), addressWidth);
+            Console.WriteLine($"{doctor.Name.PadRight(nameWidth)} | {doctor.Email.PadRight(emailWidth)} | {doctor.Phone.PadRight(phoneWidth)} | {addr}");
+
             ConsoleUI.Pause();
         }
         
@@ -146,51 +151,55 @@ namespace DotnetHospital.Menus
         {
             ConsoleUI.DrawHeader("DOTNET Hospital Management System", "Check Patient Details");
             Console.WriteLine();
-            
-            Console.Write("Enter the ID of the patient to check: ");
-            var input = Console.ReadLine();
-            
-            if (string.IsNullOrWhiteSpace(input))
+
+            while (true)
             {
-                ConsoleUI.Error("Patient ID cannot be empty.");
+                Console.Write("Enter the ID of the patient to check ");
+                Console.ForegroundColor = ConsoleColor.DarkGray; Console.Write("('b' to go back)"); Console.ResetColor(); Console.Write(": ");
+                var input = Console.ReadLine();
+
+                if (!string.IsNullOrWhiteSpace(input) && input.Trim().Equals("b", StringComparison.OrdinalIgnoreCase))
+                {
+                    return;
+                }
+                if (string.IsNullOrWhiteSpace(input))
+                {
+                    ConsoleUI.Error("Patient ID cannot be empty.");
+                    continue;
+                }
+                if (!int.TryParse(input, out int patientId))
+                {
+                    ConsoleUI.Error("Invalid patient ID format.");
+                    continue;
+                }
+
+                var patient = patients.FirstOrDefault(p => p.Id == patientId);
+                if (patient == null)
+                {
+                    ConsoleUI.Error($"Patient with ID {patientId} not found.");
+                    continue;
+                }
+
+                ConsoleUI.Log($"Details for {patient.Name}", ConsoleColor.Green);
+                Console.WriteLine();
+
+                var doctor = doctors.FirstOrDefault(d => d.Id == patient.DoctorId);
+                var doctorName = doctor?.Name ?? "Not assigned";
+
+                int patientWidth2 = 20;
+                int doctorWidth2 = 20;
+                int emailWidth2 = 28;
+                int phoneWidth2 = 15;
+                int addressWidth2 = ConsoleUI.ComputeFlexibleWidth(patientWidth2 + doctorWidth2 + emailWidth2 + phoneWidth2, 5 - 1, 20, 60);
+                string header2 = $"{"Patient".PadRight(patientWidth2)} | {"Doctor".PadRight(doctorWidth2)} | {"Email Address".PadRight(emailWidth2)} | {"Phone".PadRight(phoneWidth2)} | {"Address".PadRight(addressWidth2)}";
+                Console.WriteLine(header2);
+                Console.WriteLine(new string('-', header2.Length));
+                var addr2 = ConsoleUI.Truncate(patient.GetFormattedAddress(), addressWidth2);
+                Console.WriteLine($"{patient.Name.PadRight(patientWidth2)} | {doctorName.PadRight(doctorWidth2)} | {patient.Email.PadRight(emailWidth2)} | {patient.Phone.PadRight(phoneWidth2)} | {addr2}");
+
                 ConsoleUI.Pause();
                 return;
             }
-            
-            if (!int.TryParse(input, out int patientId))
-            {
-                ConsoleUI.Error("Invalid patient ID format.");
-                ConsoleUI.Pause();
-                return;
-            }
-            
-            var patient = patients.FirstOrDefault(p => p.Id == patientId);
-            
-            if (patient == null)
-            {
-                ConsoleUI.Error($"Patient with ID {patientId} not found.");
-                ConsoleUI.Pause();
-                return;
-            }
-            
-            ConsoleUI.Log($"Details for {patient.Name}", ConsoleColor.Green);
-            Console.WriteLine();
-            
-            var doctor = doctors.FirstOrDefault(d => d.Id == patient.DoctorId);
-            var doctorName = doctor?.Name ?? "Not assigned";
-            
-            int patientWidth2 = 20;
-            int doctorWidth2 = 20;
-            int emailWidth2 = 28;
-            int phoneWidth2 = 15;
-            int addressWidth2 = ConsoleUI.ComputeFlexibleWidth(patientWidth2 + doctorWidth2 + emailWidth2 + phoneWidth2, 5 - 1, 20, 60);
-            string header2 = $"{"Patient".PadRight(patientWidth2)} | {"Doctor".PadRight(doctorWidth2)} | {"Email Address".PadRight(emailWidth2)} | {"Phone".PadRight(phoneWidth2)} | {"Address".PadRight(addressWidth2)}";
-            Console.WriteLine(header2);
-            Console.WriteLine(new string('-', header2.Length));
-            var addr2 = ConsoleUI.Truncate(patient.GetFormattedAddress(), addressWidth2);
-            Console.WriteLine($"{patient.Name.PadRight(patientWidth2)} | {doctorName.PadRight(doctorWidth2)} | {patient.Email.PadRight(emailWidth2)} | {patient.Phone.PadRight(phoneWidth2)} | {addr2}");
-            
-            ConsoleUI.Pause();
         }
         
         private static void ShowAppointmentsWithPatient(Doctor doctor, List<Appointment> appointments, List<Patient> patients)
@@ -198,30 +207,19 @@ namespace DotnetHospital.Menus
             ConsoleUI.DrawHeader("DOTNET Hospital Management System", "Appointments With");
             Console.WriteLine();
             
-            Console.Write("Enter the ID of the patient you would like to view appointments for: ");
-            var input = Console.ReadLine();
-            
-            if (string.IsNullOrWhiteSpace(input))
+            int patientId;
+            Patient patient;
+            while (true)
             {
-                ConsoleUI.Error("Patient ID cannot be empty.");
-                ConsoleUI.Pause();
-                return;
-            }
-            
-            if (!int.TryParse(input, out int patientId))
-            {
-                ConsoleUI.Error("Invalid patient ID format.");
-                ConsoleUI.Pause();
-                return;
-            }
-            
-            var patient = patients.FirstOrDefault(p => p.Id == patientId);
-            
-            if (patient == null)
-            {
-                ConsoleUI.Error($"Patient with ID {patientId} not found.");
-                ConsoleUI.Pause();
-                return;
+                Console.Write("Enter the ID of the patient you would like to view appointments for ");
+                Console.ForegroundColor = ConsoleColor.DarkGray; Console.Write("('b' to go back)"); Console.ResetColor(); Console.Write(": ");
+                var input = Console.ReadLine();
+                if (!string.IsNullOrWhiteSpace(input) && input.Trim().Equals("b", StringComparison.OrdinalIgnoreCase)) return;
+                if (string.IsNullOrWhiteSpace(input)) { ConsoleUI.Error("Patient ID cannot be empty."); continue; }
+                if (!int.TryParse(input, out patientId)) { ConsoleUI.Error("Invalid patient ID format."); continue; }
+                patient = patients.FirstOrDefault(p => p.Id == patientId);
+                if (patient == null) { ConsoleUI.Error($"Patient with ID {patientId} not found."); continue; }
+                break;
             }
             
             var patientAppointments = appointments.Where(a => a.PatientId == patientId && a.DoctorId == doctor.Id).ToList();
