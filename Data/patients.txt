@@ -1,5 +1,6 @@
-10001,John Smith,pw10001,10,M,20001,john.smith@email.com,0412345678,10,Main St,Sydney,
-10002,Emily Brown,pw10002,8,F,20001,emily.brown@email.com,0433456789,20,Queen St,Sydney,
-10003,Michael Johnson,pw10003,13,M,20001,michael.johnson@email.com,0456567890,30,King St,Sydney,
-10004,Hannah Wilson,pw10004,27,F,20002,hannah.wilson@email.com,0478678901,40,George St,Sydney,
-10005,James Kim,pw10005,35,M,20002,james.kim@email.com,0490789012,50,Pitt St,Sydney,
+10001,John Smith,pw10001,10,M,20001,john.smith@email.com,0412345678,10,Main St,Sydney,NSW
+10002,Emily Brown,pw10002,8,F,20001,emily.brown@email.com,0433456789,20,Queen St,Sydney,NSW
+10003,Michael Johnson,pw10003,13,M,20001,michael.johnson@email.com,0456567890,30,King St,Sydney,NSW
+10004,Hannah Wilson,pw10004,27,F,20002,hannah.wilson@email.com,0478678901,40,George St,Sydney,NSW
+10005,James Kim,pw10005,35,M,20002,james.kim@email.com,0490789012,50,Pitt St,Sydney,NSW
+

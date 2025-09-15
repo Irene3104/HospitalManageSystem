@@ -113,19 +113,7 @@ namespace DotnetHospital.Menus
                     ConsoleUI.Log("Your doctor:", ConsoleColor.Green);
                     Console.WriteLine();
                     
-                    // Define consistent column widths for table display
-                    int nameWidth = 20;
-                    int emailWidth = 28;
-                    int phoneWidth = 15;
-                    int addressWidth = ConsoleUI.ComputeFlexibleWidth(nameWidth + emailWidth + phoneWidth, 3, 20, 60);
-
-                    // Display doctor information in table format
-                    string header =
-                        $"{"Name".PadRight(nameWidth)} | {"Email Address".PadRight(emailWidth)} | {"Phone".PadRight(phoneWidth)} | {"Address".PadRight(addressWidth)}";
-                    Console.WriteLine(header);
-                    Console.WriteLine(new string('-', header.Length));
-                    var addr = ConsoleUI.Truncate(doctor.GetFormattedAddress(), addressWidth);
-                    Console.WriteLine($"{doctor.DisplayName.PadRight(nameWidth)} | {doctor.Email.PadRight(emailWidth)} | {doctor.Phone.PadRight(phoneWidth)} | {addr}");
+                    ConsoleUI.DisplayDoctorTable(new[] { doctor });
                 }
                 else
                 {
@@ -153,31 +141,7 @@ namespace DotnetHospital.Menus
                 return a.PatientId == patient.Id; 
             });
             
-            if (patientAppointments.Count == 0)
-            {
-                ConsoleUI.Warning("No appointments found.");
-            }
-            else
-            {
-                // Define column widths for table display
-                int doctorWidth = 20;
-                int patientWidth = 20;
-                int descWidth = ConsoleUI.ComputeFlexibleWidth(doctorWidth + patientWidth, 2, 15, 60);
-
-                // Display appointments in table format
-                string header = $"{"Doctor".PadRight(doctorWidth)} | {"Patient".PadRight(patientWidth)} | {"Description".PadRight(descWidth)}";
-                Console.WriteLine(header);
-                Console.WriteLine(new string('-', header.Length));
-                
-                foreach (var appointment in patientAppointments)
-                {
-                    var doctor = doctors.FirstOrDefault(d => d.Id == appointment.DoctorId);
-                    var doctorName = doctor?.DisplayName ?? "Unknown Doctor";
-                    var note = ConsoleUI.Truncate(appointment.Note ?? string.Empty, descWidth);
-                    Console.WriteLine($"{doctorName.PadRight(doctorWidth)} | {patient.Name.PadRight(patientWidth)} | {note}");
-                }
-            }
-            
+            ConsoleUI.DisplayAppointmentTable(patientAppointments, doctors, new[] { patient });
             ConsoleUI.Pause();
         }
         
@@ -235,15 +199,7 @@ namespace DotnetHospital.Menus
             
             // Get appointment description
             ConsoleUI.Log($"You are booking a new appointment with {selectedDoctor.Name}", ConsoleColor.Green);
-            Console.Write("Description of the appointment: ");
-            var description = Console.ReadLine();
-            
-            if (string.IsNullOrWhiteSpace(description))
-            {
-                ConsoleUI.Error("Description cannot be empty.");
-                ConsoleUI.Pause();
-                return;
-            }
+            var description = ConsoleUI.GetRequiredTextInput("Description of the appointment: ", "Description");
             
             // Create and save new appointment
             var newAppointment = new Appointment(patient.Id, selectedDoctor.Id, description);

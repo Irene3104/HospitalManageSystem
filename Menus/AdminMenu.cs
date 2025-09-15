@@ -83,28 +83,7 @@ namespace DotnetHospital.Menus
             ConsoleUI.Log("All doctors registered to the DOTNET Hospital Management System", ConsoleColor.Green);
             Console.WriteLine();
             
-            if (doctors.Count == 0)
-            {
-                ConsoleUI.Warning("No doctors found.");
-            }
-            else
-            {
-                int nameWidth = 20;
-                int emailWidth = 28;
-                int phoneWidth = 15;
-                int addressWidth = ConsoleUI.ComputeFlexibleWidth(nameWidth + emailWidth + phoneWidth, 3, 20, 60);
-
-                string header = $"{"Name".PadRight(nameWidth)} | {"Email Address".PadRight(emailWidth)} | {"Phone".PadRight(phoneWidth)} | {"Address".PadRight(addressWidth)}";
-                Console.WriteLine(header);
-                Console.WriteLine(new string('-', header.Length));
-
-                foreach (var doctor in doctors)
-                {
-                    var addr = ConsoleUI.Truncate(doctor.GetFormattedAddress(), addressWidth);
-                    Console.WriteLine($"{doctor.DisplayName.PadRight(nameWidth)} | {doctor.Email.PadRight(emailWidth)} | {doctor.Phone.PadRight(phoneWidth)} | {addr}");
-                }
-            }
-            
+            ConsoleUI.DisplayDoctorTable(doctors);
             ConsoleUI.Pause();
         }
         
@@ -115,29 +94,20 @@ namespace DotnetHospital.Menus
             
             while (true)
             {
-                Console.Write("Please enter the ID of the doctor whose details you are checking ");
-                Console.ForegroundColor = ConsoleColor.DarkGray; Console.Write("('b' to go back)"); Console.ResetColor(); Console.Write(": ");
-                var input = Console.ReadLine();
-
-                if (!string.IsNullOrWhiteSpace(input) && input.Trim().Equals("b", StringComparison.OrdinalIgnoreCase)) return;
-                if (string.IsNullOrWhiteSpace(input)) { ConsoleUI.Error("Doctor ID cannot be empty."); continue; }
-                if (!int.TryParse(input, out int doctorId)) { ConsoleUI.Error("Invalid doctor ID format."); continue; }
+                int doctorId = ConsoleUI.GetValidIdInput("Please enter the ID of the doctor whose details you are checking");
+                if (doctorId == -1) return; // User chose to go back
 
                 var doctor = doctors.FirstOrDefault(d => d.Id == doctorId);
-                if (doctor == null) { ConsoleUI.Error($"Doctor with ID {doctorId} not found."); continue; }
+                if (doctor == null) 
+                { 
+                    ConsoleUI.Error($"Doctor with ID {doctorId} not found."); 
+                    continue; 
+                }
 
                 ConsoleUI.Log($"Details for {doctor.DisplayName}", ConsoleColor.Green);
                 Console.WriteLine();
 
-                int nameWidth = 20;
-                int emailWidth = 28;
-                int phoneWidth = 15;
-                int addressWidth = ConsoleUI.ComputeFlexibleWidth(nameWidth + emailWidth + phoneWidth, 3, 20, 60);
-                string header = $"{"Name".PadRight(nameWidth)} | {"Email Address".PadRight(emailWidth)} | {"Phone".PadRight(phoneWidth)} | {"Address".PadRight(addressWidth)}";
-                Console.WriteLine(header);
-                Console.WriteLine(new string('-', header.Length));
-                var addr = ConsoleUI.Truncate(doctor.GetFormattedAddress(), addressWidth);
-                Console.WriteLine($"{doctor.DisplayName.PadRight(nameWidth)} | {doctor.Email.PadRight(emailWidth)} | {doctor.Phone.PadRight(phoneWidth)} | {addr}");
+                ConsoleUI.DisplayDoctorTable(new[] { doctor });
                 ConsoleUI.Pause();
                 return;
             }
@@ -149,31 +119,7 @@ namespace DotnetHospital.Menus
             ConsoleUI.Log("All patients registered to the DOTNET Hospital Management System", ConsoleColor.Green);
             Console.WriteLine();
             
-            if (patients.Count == 0)
-            {
-                ConsoleUI.Warning("No patients found.");
-            }
-            else
-            {
-                int patientWidth = 20;
-                int doctorWidth = 20;
-                int emailWidth = 28;
-                int phoneWidth = 15;
-                int addressWidth = ConsoleUI.ComputeFlexibleWidth(patientWidth + doctorWidth + emailWidth + phoneWidth, 4, 20, 60);
-
-                string header = $"{"Patient".PadRight(patientWidth)} | {"Doctor".PadRight(doctorWidth)} | {"Email Address".PadRight(emailWidth)} | {"Phone".PadRight(phoneWidth)} | {"Address".PadRight(addressWidth)}";
-                Console.WriteLine(header);
-                Console.WriteLine(new string('-', header.Length));
-                
-                foreach (var patient in patients)
-                {
-                    var doctor = doctors.FirstOrDefault(d => d.Id == patient.DoctorId);
-                    var doctorName = doctor?.DisplayName ?? "Not assigned";
-                    var addr = ConsoleUI.Truncate(patient.GetFormattedAddress(), addressWidth);
-                    Console.WriteLine($"{patient.Name.PadRight(patientWidth)} | {doctorName.PadRight(doctorWidth)} | {patient.Email.PadRight(emailWidth)} | {patient.Phone.PadRight(phoneWidth)} | {addr}");
-                }
-            }
-            
+            ConsoleUI.DisplayPatientDoctorTable(patients, doctors);
             ConsoleUI.Pause();
         }
         
@@ -184,31 +130,20 @@ namespace DotnetHospital.Menus
             
             while (true)
             {
-                Console.Write("Please enter the ID of the patient whose details you are checking ");
-                Console.ForegroundColor = ConsoleColor.DarkGray; Console.Write("('b' to go back)"); Console.ResetColor(); Console.Write(": ");
-                var input = Console.ReadLine();
-                if (!string.IsNullOrWhiteSpace(input) && input.Trim().Equals("b", StringComparison.OrdinalIgnoreCase)) return;
-                if (string.IsNullOrWhiteSpace(input)) { ConsoleUI.Error("Patient ID cannot be empty."); continue; }
-                if (!int.TryParse(input, out int patientId)) { ConsoleUI.Error("Invalid patient ID format."); continue; }
+                int patientId = ConsoleUI.GetValidIdInput("Please enter the ID of the patient whose details you are checking");
+                if (patientId == -1) return; // User chose to go back
 
                 var patient = patients.FirstOrDefault(p => p.Id == patientId);
-                if (patient == null) { ConsoleUI.Error($"Patient with ID {patientId} not found."); continue; }
+                if (patient == null) 
+                { 
+                    ConsoleUI.Error($"Patient with ID {patientId} not found."); 
+                    continue; 
+                }
 
-                var doctor = doctors.FirstOrDefault(d => d.Id == patient.DoctorId);
-                var doctorName = doctor?.DisplayName ?? "Not assigned";
-                
                 ConsoleUI.Log($"Details for {patient.Name}", ConsoleColor.Green);
                 Console.WriteLine();
-                int patientWidth2 = 20;
-                int doctorWidth2 = 20;
-                int emailWidth2 = 28;
-                int phoneWidth2 = 15;
-                int addressWidth2 = ConsoleUI.ComputeFlexibleWidth(patientWidth2 + doctorWidth2 + emailWidth2 + phoneWidth2, 4, 20, 60);
-                string header2 = $"{"Patient".PadRight(patientWidth2)} | {"Doctor".PadRight(doctorWidth2)} | {"Email Address".PadRight(emailWidth2)} | {"Phone".PadRight(phoneWidth2)} | {"Address".PadRight(addressWidth2)}";
-                Console.WriteLine(header2);
-                Console.WriteLine(new string('-', header2.Length));
-                var addr2 = ConsoleUI.Truncate(patient.GetFormattedAddress(), addressWidth2);
-                Console.WriteLine($"{patient.Name.PadRight(patientWidth2)} | {doctorName.PadRight(doctorWidth2)} | {patient.Email.PadRight(emailWidth2)} | {patient.Phone.PadRight(phoneWidth2)} | {addr2}");
+                
+                ConsoleUI.DisplayPatientDoctorTable(new[] { patient }, doctors);
                 ConsoleUI.Pause();
                 return;
             }
@@ -222,41 +157,18 @@ namespace DotnetHospital.Menus
             
             try
             {
-                Console.Write("First Name: ");
-                var firstName = Console.ReadLine();
+                // Get required information
+                var firstName = ConsoleUI.GetRequiredTextInput("First Name: ", "First name");
+                var lastName = ConsoleUI.GetRequiredTextInput("Last Name: ", "Last name");
+                var specialty = ConsoleUI.GetRequiredTextInput("Specialty: ", "Specialty");
                 
-                Console.Write("Last Name: ");
-                var lastName = Console.ReadLine();
-                
-                Console.Write("Email: ");
-                var email = Console.ReadLine();
-                
-                Console.Write("Phone: ");
-                var phone = Console.ReadLine();
-                
-                Console.Write("Street Number: ");
-                var streetNumber = Console.ReadLine();
-                
-                Console.Write("Street: ");
-                var street = Console.ReadLine();
-                
-                Console.Write("City: ");
-                var city = Console.ReadLine();
-                
-                Console.Write("State: ");
-                var state = Console.ReadLine();
-                
-                Console.Write("Specialty: ");
-                var specialty = Console.ReadLine();
-                
-                // Validate required fields
-                if (string.IsNullOrWhiteSpace(firstName) || string.IsNullOrWhiteSpace(lastName) || 
-                    string.IsNullOrWhiteSpace(specialty))
-                {
-                    ConsoleUI.Error("First name, last name, and specialty are required.");
-                    ConsoleUI.Pause();
-                    return;
-                }
+                // Get optional information
+                var email = ConsoleUI.GetOptionalTextInput("Email: ");
+                var phone = ConsoleUI.GetOptionalTextInput("Phone: ");
+                var streetNumber = ConsoleUI.GetOptionalTextInput("Street Number: ");
+                var street = ConsoleUI.GetOptionalTextInput("Street: ");
+                var city = ConsoleUI.GetOptionalTextInput("City: ");
+                var state = ConsoleUI.GetOptionalTextInput("State: ");
                 
                 var fullName = $"{firstName} {lastName}";
                 var newDoctor = Doctor.CreateNew(fullName, specialty, email, phone, streetNumber, street, city, state, doctors);
@@ -285,51 +197,30 @@ namespace DotnetHospital.Menus
             
             try
             {
-                Console.Write("First Name: ");
-                var firstName = Console.ReadLine();
+                // Get required information
+                var firstName = ConsoleUI.GetRequiredTextInput("First Name: ", "First name");
+                var lastName = ConsoleUI.GetRequiredTextInput("Last Name: ", "Last name");
+                var gender = ConsoleUI.GetRequiredTextInput("Gender (M/F): ", "Gender");
                 
-                Console.Write("Last Name: ");
-                var lastName = Console.ReadLine();
-                
-                Console.Write("Email: ");
-                var email = Console.ReadLine();
-                
-                Console.Write("Phone: ");
-                var phone = Console.ReadLine();
-                
-                Console.Write("Street Number: ");
-                var streetNumber = Console.ReadLine();
-                
-                Console.Write("Street: ");
-                var street = Console.ReadLine();
-                
-                Console.Write("City: ");
-                var city = Console.ReadLine();
-                
-                Console.Write("State: ");
-                var state = Console.ReadLine();
-                
-                Console.Write("Age: ");
-                var ageInput = Console.ReadLine();
-                
-                Console.Write("Gender (M/F): ");
-                var gender = Console.ReadLine();
-                
-                // Validate required fields
-                if (string.IsNullOrWhiteSpace(firstName) || string.IsNullOrWhiteSpace(lastName) || 
-                    string.IsNullOrWhiteSpace(ageInput) || string.IsNullOrWhiteSpace(gender))
+                // Get and validate age
+                int age;
+                while (true)
                 {
-                    ConsoleUI.Error("First name, last name, age, and gender are required.");
-                    ConsoleUI.Pause();
-                    return;
+                    var ageInput = ConsoleUI.GetRequiredTextInput("Age: ", "Age");
+                    if (int.TryParse(ageInput, out age))
+                    {
+                        break;
+                    }
+                    ConsoleUI.Error("Invalid age format. Please enter a number.");
                 }
                 
-                if (!int.TryParse(ageInput, out int age))
-                {
-                    ConsoleUI.Error("Invalid age format.");
-                    ConsoleUI.Pause();
-                    return;
-                }
+                // Get optional information
+                var email = ConsoleUI.GetOptionalTextInput("Email: ");
+                var phone = ConsoleUI.GetOptionalTextInput("Phone: ");
+                var streetNumber = ConsoleUI.GetOptionalTextInput("Street Number: ");
+                var street = ConsoleUI.GetOptionalTextInput("Street: ");
+                var city = ConsoleUI.GetOptionalTextInput("City: ");
+                var state = ConsoleUI.GetOptionalTextInput("State: ");
                 
                 var fullName = $"{firstName} {lastName}";
                 var newPatient = Patient.CreateNew(fullName, age, gender, null, email, phone, streetNumber, street, city, state, patients);

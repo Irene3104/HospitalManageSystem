@@ -1,10 +1,6 @@
 A0001,10001,20001,covid
 A0002,10001,20001,health check
-A0003,10001,20001,regular checkup
-A0004,10001,20002,flu symptoms
-A0005,10001,20001,annual checkup
-A0006,10001,20001,Regular health check
-A0007,10005,20002,Covid Test
-A0008,10006,20004,wisdom teeth
-A0040,10002,20001,Headache
-A2683,10003,20001,health check
+A0003,10003,20001,regular checkup
+A0004,10004,20002,flu symptoms
+A0005,10002,20001,annual checkup
+A2397,10001,20001,flu vaccination
