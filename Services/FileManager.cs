@@ -35,7 +35,7 @@ namespace DotnetHospital.Services
             Directory.CreateDirectory(DataDir);
 
             File.WriteAllLines(PatientsPath, patients.Select(p =>
-                $"{p.Id},{p.Name},{p.Password},{p.Age},{p.DoctorId}"));
+                $"{p.Id},{p.Name},{p.Password},{p.Age},{p.Gender},{p.DoctorId}"));
 
             File.WriteAllLines(DoctorsPath, doctors.Select(d =>
                 $"{d.Id},{d.Name},{d.Password},{d.Specialty}"));
