@@ -3,4 +3,3 @@
 10003,Michael Johnson,pw10003,13,M,20001,michael.johnson@email.com,0456567890,30,King St,Sydney,
 10004,Hannah Wilson,pw10004,27,F,20002,hannah.wilson@email.com,0478678901,40,George St,Sydney,
 10005,James Kim,pw10005,35,M,20002,james.kim@email.com,0490789012,50,Pitt St,Sydney,
-10006,Seoyoon Jang,pw10006,30,F,,js@gmail.com,040789398,123,Opera,Darlinghurst,Sydney
