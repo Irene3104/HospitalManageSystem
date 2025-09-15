@@ -10,7 +10,7 @@ namespace DotnetHospital.Services
     // Service for loading and saving data to text files
     public static class FileManager
     {
-        public static string DataDir => Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data");
+        public static string DataDir => Path.Combine(Directory.GetParent(AppDomain.CurrentDomain.BaseDirectory).Parent.Parent.FullName, "Data");
 
         public static string PatientsPath => Path.Combine(DataDir, "patients.txt");
         public static string DoctorsPath => Path.Combine(DataDir, "doctors.txt");
@@ -43,9 +43,9 @@ namespace DotnetHospital.Services
             File.WriteAllLines(AdminsPath, admins.Select(a =>
                 $"{a.Id},{a.Name},{a.Password},{a.Email},{a.Phone},{a.StreetNumber},{a.Street},{a.City},{a.State}"));
 
-            // Persist appointments including date in a stable, parseable format
+            // Persist appointments in simple format: id,patientId,doctorId,note
             File.WriteAllLines(AppointmentsPath, appts.Select(a =>
-                $"{a.Id},{a.PatientId},{a.DoctorId},{a.Date:yyyy-MM-dd HH:mm},{a.Note}"));
+                $"{a.Id},{a.PatientId},{a.DoctorId},{a.Note}"));
         }
 
         // Load methods for each entity type
@@ -120,32 +120,14 @@ namespace DotnetHospital.Services
                 if (line.StartsWith("#")) return default; // ignore header
 
                 var parts = line.Split(',');
-                if (parts.Length < 4) return default; // invalid legacy row
+                if (parts.Length < 4) return default; // invalid row
 
-                int id = int.Parse(parts[0]);
+                string id = parts[0];
                 int patientId = int.Parse(parts[1]);
                 int doctorId = int.Parse(parts[2]);
+                string note = string.Join(",", parts.Skip(3));
 
-                DateTime date;
-                string note;
-
-                if (parts.Length >= 5)
-                {
-                    // New format: id,patientId,doctorId,date,note(,note continues with commas...)
-                    if (!DateTime.TryParse(parts[3], out date))
-                    {
-                        date = DateTime.Now; // fallback instead of throwing
-                    }
-                    note = string.Join(",", parts.Skip(4));
-                }
-                else
-                {
-                    // Legacy format with no date: id,patientId,doctorId,note
-                    date = DateTime.Now; // assign a sensible default
-                    note = string.Join(",", parts.Skip(3));
-                }
-
-                return new Appointment(id, patientId, doctorId, date, note);
+                return new Appointment(id, patientId, doctorId, note);
             }).Where(a => a != null).ToList();
         }
 

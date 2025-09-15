@@ -25,6 +25,17 @@
             Specialty = specialty;
         }
 
+        // Constructor for creating new doctors with auto-generated ID and password
+        public static Doctor CreateNew(string name, string specialty, 
+                                     string email = "", string phone = "", string streetNumber = "", string street = "", 
+                                     string city = "", string state = "", 
+                                     System.Collections.Generic.IEnumerable<Doctor> existingDoctors = null)
+        {
+            var newId = Services.IdGenerator.NewDoctorId(existingDoctors);
+            var password = Services.IdGenerator.GeneratePassword(newId);
+            return new Doctor(name, password, specialty, email, phone, streetNumber, street, city, state, newId);
+        }
+
         // Override: add doctor-specific information
         public override string Summary()
         {

@@ -1,4 +1,2 @@
-# AdminId,Name,Password,Email,Phone,StreetNumber,Street,City,State
-
-90001,Admin John Miller,ad90001,admin.john@hospital.com,0499999999,1,Admin St,Sydney,NSW
-90002,Admin Grace Lee,ad90002,admin.grace@hospital.com,0499999998,2,Management Ave,Sydney,NSW
+90001,Admin John Miller,pw90001,admin.john@hospital.com,0444555666,1,Admin St,Sydney,
+90002,Admin Grace Lee,pw90002,admin.grace@hospital.com,0455666777,2,Management Ave,Sydney,

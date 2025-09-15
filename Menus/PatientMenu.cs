@@ -90,7 +90,7 @@ namespace DotnetHospital.Menus
                 {
                     ConsoleUI.Log("Your doctor:", ConsoleColor.Green);
                     Console.WriteLine();
-                    // Unified table layout with dynamic last column width
+                    // Define consistent column widths and use them for both header and row
                     int nameWidth = 20;
                     int emailWidth = 28;
                     int phoneWidth = 15;
@@ -100,7 +100,6 @@ namespace DotnetHospital.Menus
                         $"{"Name".PadRight(nameWidth)} | {"Email Address".PadRight(emailWidth)} | {"Phone".PadRight(phoneWidth)} | {"Address".PadRight(addressWidth)}";
                     Console.WriteLine(header);
                     Console.WriteLine(new string('-', header.Length));
-
                     var addr = ConsoleUI.Truncate(doctor.GetFormattedAddress(), addressWidth);
                     Console.WriteLine($"{doctor.DisplayName.PadRight(nameWidth)} | {doctor.Email.PadRight(emailWidth)} | {doctor.Phone.PadRight(phoneWidth)} | {addr}");
                 }
@@ -127,6 +126,7 @@ namespace DotnetHospital.Menus
             }
             else
             {
+               
                 int doctorWidth = 20;
                 int patientWidth = 20;
                 int descWidth = ConsoleUI.ComputeFlexibleWidth(doctorWidth + patientWidth, 2, 15, 60);
@@ -189,7 +189,7 @@ namespace DotnetHospital.Menus
                 }
             }
             
-            ConsoleUI.Log($"You are booking a new appointment with {selectedDoctor.DisplayName}", ConsoleColor.Green);
+            ConsoleUI.Log($"You are booking a new appointment with {selectedDoctor.Name}", ConsoleColor.Green);
             Console.Write("Description of the appointment: ");
             var description = Console.ReadLine();
             
@@ -201,7 +201,7 @@ namespace DotnetHospital.Menus
             }
             
             // Create new appointment
-            var newAppointment = new Appointment(patient.Id, selectedDoctor.Id, DateTime.Now, description);
+            var newAppointment = new Appointment(patient.Id, selectedDoctor.Id, description);
             appointments.Add(newAppointment);
             
             // Save to file

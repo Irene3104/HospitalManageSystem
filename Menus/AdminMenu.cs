@@ -250,7 +250,7 @@ namespace DotnetHospital.Menus
                 }
                 
                 var fullName = $"{firstName} {lastName}";
-                var newDoctor = new Doctor(fullName, "temp123", specialty, email, phone, streetNumber, street, city, state); // Default password
+                var newDoctor = Doctor.CreateNew(fullName, specialty, email, phone, streetNumber, street, city, state, doctors);
                 
                 doctors.Add(newDoctor);
                 
@@ -323,7 +323,7 @@ namespace DotnetHospital.Menus
                 }
                 
                 var fullName = $"{firstName} {lastName}";
-                var newPatient = new Patient(fullName, "temp123", age, gender, null, email, phone, streetNumber, street, city, state); // Default password
+                var newPatient = Patient.CreateNew(fullName, age, gender, null, email, phone, streetNumber, street, city, state, patients);
                 
                 patients.Add(newPatient);
                 

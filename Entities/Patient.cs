@@ -5,23 +5,21 @@
     {
         public int? DoctorId { get; set; }
         public int Age { get; set; }
-        public string Gender { get; set; } = string.Empty;  // NEW
+        public string Gender { get; set; } = string.Empty;  
 
         public string GenderDisplay
         {
             get
             {
-                if (string.IsNullOrEmpty(Gender))
-                    return "Unknown";
-
-                switch (Gender.ToUpper())
+                var gender = Gender?.ToUpper();
+                switch (gender)
                 {
                     case "M":
                         return "Man";
                     case "W":
                         return "Woman";
                     default:
-                        return Gender;
+                        return Gender ?? "Unknown";
                 }
             }
         }
@@ -34,6 +32,17 @@
             Age = age;
             Gender = gender;
             DoctorId = doctorId;
+        }
+
+        // Constructor for creating new patients with auto-generated ID and password
+        public static Patient CreateNew(string name, int age, string gender, 
+                                      int? doctorId = null, string email = "", string phone = "", 
+                                      string streetNumber = "", string street = "", string city = "", string state = "", 
+                                      System.Collections.Generic.IEnumerable<Patient> existingPatients = null)
+        {
+            var newId = Services.IdGenerator.NewPatientId(existingPatients);
+            var password = Services.IdGenerator.GeneratePassword(newId);
+            return new Patient(name, password, age, gender, doctorId, email, phone, streetNumber, street, city, state, newId);
         }
 
         // Override: add patient-specific information

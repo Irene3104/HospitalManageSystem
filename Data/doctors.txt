@@ -1,5 +1,4 @@
-# DoctorId,Name,Password,Specialty,Email,Phone,StreetNumber,Street,City,State
-
-20001,Dr. Andrew Kim,dr20001,Pediatrics,dr.andrew@hospital.com,0412345678,123,Medical St,Sydney,NSW
-20002,Dr. Sarah Eren,dr20002,Cardiology,dr.sarah@hospital.com,0412345679,456,Health Ave,Sydney,NSW
-20003,Dr. Michael Smith,dr20003,Orthopedics,dr.michael@hospital.com,0412345680,789,Bone St,Sydney,NSW
+20001,Dr. Andrew Kim,pw20001,Pediatrics,dr.andrew@hospital.com,0411234567,123,Medical St,Sydney,
+20002,Dr. Sarah Eren,pw20002,Cardiology,dr.sarah@hospital.com,0422345678,456,Health Ave,Sydney,
+20003,Dr. Michael Smith,pw20003,Orthopedics,dr.michael@hospital.com,0433456789,789,Bone St,Sydney,
+20004,Steve Han,pw20004,Dental,st.han@gmail.com,0403789650,50,Audley,Petersham,Sydney
