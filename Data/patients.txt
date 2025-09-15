@@ -1,17 +1,17 @@
-# PatientId,Name,Password,Age,Gender,DoctorId
+# PatientId,Name,Password,Age,Gender,DoctorId,Email,Phone,StreetNumber,Street,City,State
 
-10001,John Smith,p1001,10,M,20001
-10002,Emily Brown,p1002,8,F,20001
-10003,Michael Johnson,p1003,13,M,20001
-10004,Hannah Wilson,p1004,27,F,20002
-10005,James Kim,p1005,35,M,20002
-10006,Sophie Lee,p1006,29,F,20002
-10007,Daniel Park,p1007,31,M,20003
-10008,Olivia Taylor,p1008,40,F,20003
-10009,Minjun Choi,p1009,33,M,20003
-10010,Charlotte Nguyen,p1010,7,F,20001
-10011,Lucas Davis,p1011,26,M,20001
-10012,Alice Wong,p1012,38,F,20002
-10013,Seoyoon Kim,p1013,45,F,20003
-10014,Ethan Thompson,p1014,36,M,20001
-10015,Grace Miller,p1015,41,F,20002
+10001,John Smith,p1001,10,M,20001,john.smith@email.com,0411111111,10,Main St,Sydney,NSW
+10002,Emily Brown,p1002,8,F,20001,emily.brown@email.com,0411111112,20,Queen St,Sydney,NSW
+10003,Michael Johnson,p1003,13,M,20001,michael.johnson@email.com,0411111113,30,King St,Sydney,NSW
+10004,Hannah Wilson,p1004,27,F,20002,hannah.wilson@email.com,0411111114,40,George St,Sydney,NSW
+10005,James Kim,p1005,35,M,20002,james.kim@email.com,0411111115,50,Pitt St,Sydney,NSW
+10006,Sophie Lee,p1006,29,F,20002,sophie.lee@email.com,0411111116,60,Market St,Sydney,NSW
+10007,Daniel Park,p1007,31,M,20003,daniel.park@email.com,0411111117,70,Circular Quay,Sydney,NSW
+10008,Olivia Taylor,p1008,40,F,20003,olivia.taylor@email.com,0411111118,80,Opera House,Sydney,NSW
+10009,Minjun Choi,p1009,33,M,20003,minjun.choi@email.com,0411111119,90,Harbour Bridge,Sydney,NSW
+10010,Charlotte Nguyen,p1010,7,F,20001,charlotte.nguyen@email.com,0411111120,100,Bondi Beach,Sydney,NSW
+10011,Lucas Davis,p1011,26,M,20001,lucas.davis@email.com,0411111121,110,Manly Beach,Sydney,NSW
+10012,Alice Wong,p1012,38,F,20002,alice.wong@email.com,0411111122,120,Parramatta,Sydney,NSW
+10013,Seoyoon Kim,p1013,45,F,20003,seoyoon.kim@email.com,0411111123,130,Blacktown,Sydney,NSW
+10014,Ethan Thompson,p1014,36,M,20001,ethan.thompson@email.com,0411111124,140,Liverpool,Sydney,NSW
+10015,Grace Miller,p1015,41,F,20002,grace.miller@email.com,0411111125,150,Campbelltown,Sydney,NSW

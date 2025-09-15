@@ -35,16 +35,17 @@ namespace DotnetHospital.Services
             Directory.CreateDirectory(DataDir);
 
             File.WriteAllLines(PatientsPath, patients.Select(p =>
-                $"{p.Id},{p.Name},{p.Password},{p.Age},{p.Gender},{p.DoctorId}"));
+                $"{p.Id},{p.Name},{p.Password},{p.Age},{p.Gender},{p.DoctorId},{p.Email},{p.Phone},{p.StreetNumber},{p.Street},{p.City},{p.State}"));
 
             File.WriteAllLines(DoctorsPath, doctors.Select(d =>
-                $"{d.Id},{d.Name},{d.Password},{d.Specialty}"));
+                $"{d.Id},{d.Name},{d.Password},{d.Specialty},{d.Email},{d.Phone},{d.StreetNumber},{d.Street},{d.City},{d.State}"));
 
             File.WriteAllLines(AdminsPath, admins.Select(a =>
-                $"{a.Id},{a.Name},{a.Password}"));
+                $"{a.Id},{a.Name},{a.Password},{a.Email},{a.Phone},{a.StreetNumber},{a.Street},{a.City},{a.State}"));
 
+            // Persist appointments including date in a stable, parseable format
             File.WriteAllLines(AppointmentsPath, appts.Select(a =>
-                $"{a.Id},{a.PatientId},{a.DoctorId},{a.Note}"));
+                $"{a.Id},{a.PatientId},{a.DoctorId},{a.Date:yyyy-MM-dd HH:mm},{a.Note}"));
         }
 
         // Load methods for each entity type
@@ -54,13 +55,19 @@ namespace DotnetHospital.Services
             {
                 var t = line.Split(',');
                 // Order in patients.txt:
-                // Id,Name,Password,Age,Gender,DoctorId
+                // Id,Name,Password,Age,Gender,DoctorId,Email,Phone,StreetNumber,Street,City,State
                 return new Patient(
                     name: t[1],
                     password: t[2],
                     age: int.Parse(t[3]),
-                    gender: t[4],                                          
+                    gender: t[4],
                     doctorId: string.IsNullOrWhiteSpace(t[5]) ? (int?)null : int.Parse(t[5]),
+                    email: t.Length > 6 ? t[6] : "",
+                    phone: t.Length > 7 ? t[7] : "",
+                    streetNumber: t.Length > 8 ? t[8] : "",
+                    street: t.Length > 9 ? t[9] : "",
+                    city: t.Length > 10 ? t[10] : "",
+                    state: t.Length > 11 ? t[11] : "",
                     id: int.Parse(t[0]));
             });
         }
@@ -71,10 +78,18 @@ namespace DotnetHospital.Services
             return Load(DoctorsPath, line =>
             {
                 var t = line.Split(',');
+                // Order in doctors.txt:
+                // Id,Name,Password,Specialty,Email,Phone,StreetNumber,Street,City,State
                 return new Doctor(
                     name: t[1],
                     password: t[2],
                     specialty: t[3],
+                    email: t.Length > 4 ? t[4] : "",
+                    phone: t.Length > 5 ? t[5] : "",
+                    streetNumber: t.Length > 6 ? t[6] : "",
+                    street: t.Length > 7 ? t[7] : "",
+                    city: t.Length > 8 ? t[8] : "",
+                    state: t.Length > 9 ? t[9] : "",
                     id: int.Parse(t[0]));
             });
         }
@@ -84,9 +99,17 @@ namespace DotnetHospital.Services
             return Load(AdminsPath, line =>
             {
                 var t = line.Split(',');
+                // Order in admins.txt:
+                // Id,Name,Password,Email,Phone,StreetNumber,Street,City,State
                 return new Admin(
                     name: t[1],
                     password: t[2],
+                    email: t.Length > 3 ? t[3] : "",
+                    phone: t.Length > 4 ? t[4] : "",
+                    streetNumber: t.Length > 5 ? t[5] : "",
+                    street: t.Length > 6 ? t[6] : "",
+                    city: t.Length > 7 ? t[7] : "",
+                    state: t.Length > 8 ? t[8] : "",
                     id: int.Parse(t[0]));
             });
         }
@@ -96,13 +119,33 @@ namespace DotnetHospital.Services
             {
                 if (line.StartsWith("#")) return default; // ignore header
 
-                var t = line.Split(',');
-                return new Appointment(
-                    id: int.Parse(t[0]),
-                    patientId: int.Parse(t[1]),
-                    doctorId: int.Parse(t[2]),
-                    date: DateTime.Parse(t[3]),
-                    note: t[4]);
+                var parts = line.Split(',');
+                if (parts.Length < 4) return default; // invalid legacy row
+
+                int id = int.Parse(parts[0]);
+                int patientId = int.Parse(parts[1]);
+                int doctorId = int.Parse(parts[2]);
+
+                DateTime date;
+                string note;
+
+                if (parts.Length >= 5)
+                {
+                    // New format: id,patientId,doctorId,date,note(,note continues with commas...)
+                    if (!DateTime.TryParse(parts[3], out date))
+                    {
+                        date = DateTime.Now; // fallback instead of throwing
+                    }
+                    note = string.Join(",", parts.Skip(4));
+                }
+                else
+                {
+                    // Legacy format with no date: id,patientId,doctorId,note
+                    date = DateTime.Now; // assign a sensible default
+                    note = string.Join(",", parts.Skip(3));
+                }
+
+                return new Appointment(id, patientId, doctorId, date, note);
             }).Where(a => a != null).ToList();
         }
 

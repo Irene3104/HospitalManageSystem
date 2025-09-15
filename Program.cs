@@ -2,6 +2,7 @@
 using System.Linq;
 using DotnetHospital.Entities;
 using DotnetHospital.Services;
+using DotnetHospital.Menus;
 
 namespace DotnetHospital
 {
@@ -27,19 +28,27 @@ namespace DotnetHospital
                 // Display header
                 ConsoleUI.DrawHeader("DOTNET Hospital Management System", "Login");
 
-                Console.Write("ID: ");
-                var idRaw = Console.ReadLine();
+                // Read and validate ID first; re-prompt if empty/invalid
+                int id;
+                while (true)
+                {
+                    Console.Write("ID: ");
+                    var idRaw = Console.ReadLine();
+                    if (string.IsNullOrWhiteSpace(idRaw))
+                    {
+                        ConsoleUI.Error("ID is required.");
+                        continue; // ask again, don't ask for password yet
+                    }
+                    if (!int.TryParse(idRaw, out id))
+                    {
+                        ConsoleUI.Error("Invalid ID format. Please enter digits only.");
+                        continue;
+                    }
+                    break;
+                }
 
                 Console.Write("Password: ");
                 var pw = ConsoleUI.ReadPassword();
-
-                int id;
-                if (!int.TryParse(idRaw, out id))
-                {
-                    ConsoleUI.Error("Invalid ID format.");
-                    ConsoleUI.Pause();
-                    continue;
-                }
 
                 // Find user across all roles
                 var allUsers = patients.Cast<User>()
@@ -57,9 +66,24 @@ namespace DotnetHospital
 
                 ConsoleUI.Log("Valid Credentials", ConsoleColor.Green);
                 ConsoleUI.Pause();
-
-                // TODO: 역할별 메뉴로 분기 (PatientMenu, DoctorMenu, AdminMenu)
-                break;
+                
+                if (user is Patient patient)
+                {
+                    PatientMenu.ShowMenu(patient, patients, doctors, appts);
+                }
+                else if (user is Doctor doctor)
+                {
+                    DoctorMenu.ShowMenu(doctor, patients, doctors, appts);
+                }
+                else if (user is Admin admin)
+                {
+                    AdminMenu.ShowMenu(admin, patients, doctors, appts);
+                }
+                else
+                {
+                    ConsoleUI.Error("Unknown user type.");
+                    ConsoleUI.Pause();
+                }
             }
         }
     }

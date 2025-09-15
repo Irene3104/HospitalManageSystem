@@ -1,6 +1,9 @@
 ﻿using System;
-using DotnetHospital.Services; 
-public sealed class Appointment
+using DotnetHospital.Services;
+
+namespace DotnetHospital.Entities
+{
+    public sealed class Appointment
 {
     public int Id { get; private set; }
     public int PatientId { get; private set; }
@@ -25,5 +28,6 @@ public sealed class Appointment
     public override string ToString()
     {
         return $"{Id} | P:{PatientId} | D:{DoctorId} | {Date:yyyy-MM-dd HH:mm} | {Note}";
+    }
     }
 }

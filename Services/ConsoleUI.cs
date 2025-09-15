@@ -47,7 +47,7 @@ namespace DotnetHospital.Services
         }
 
         // ===== MENUS =====
-        public static void DrawMenu(string menuTitle, string[] options, ConsoleColor titleColor = ConsoleColor.Green)
+        public static void DrawMenu(string menuTitle, string[] options, ConsoleColor titleColor = ConsoleColor.Green, bool includeZeroExit = true)
         {
             Console.ForegroundColor = titleColor;
             Console.WriteLine(menuTitle);
@@ -57,7 +57,10 @@ namespace DotnetHospital.Services
             {
                 Console.WriteLine($"{i + 1}. {options[i]}");
             }
-            Console.WriteLine("0. Exit");
+            if (includeZeroExit)
+            {
+                Console.WriteLine("0. Exit");
+            }
             Console.WriteLine();
         }
 
@@ -112,6 +115,30 @@ namespace DotnetHospital.Services
             Console.WriteLine(msg);
             Console.ResetColor();
             Console.ReadKey(true);
+        }
+
+        // ===== TABLE HELPERS =====
+        // Computes a flexible last-column width so that the header and rows fit the console width
+        public static int ComputeFlexibleWidth(int fixedColumnsTotal, int separatorsCount, int min = 15, int max = 60)
+        {
+            int consoleWidth = 0;
+            try { consoleWidth = Console.WindowWidth; } catch { consoleWidth = 0; }
+            int sepWidth = separatorsCount * 3; // " | " per separator
+            // Fallback target if console width cannot be obtained
+            int fallback = fixedColumnsTotal + sepWidth + max;
+            int target = consoleWidth > 0 ? Math.Max(0, consoleWidth - 2) : fallback; // small margin
+            int remaining = target - (fixedColumnsTotal + sepWidth);
+            return Math.Min(max, Math.Max(min, remaining));
+        }
+
+        // Safe truncation with ellipsis when content exceeds width
+        public static string Truncate(string text, int width)
+        {
+            if (string.IsNullOrEmpty(text)) return string.Empty;
+            if (width <= 0) return string.Empty;
+            if (text.Length <= width) return text;
+            if (width <= 3) return text.Substring(0, width);
+            return text.Substring(0, width - 3) + "...";
         }
 
         // ===== INTERNAL =====

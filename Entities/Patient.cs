@@ -5,20 +5,41 @@
     {
         public int? DoctorId { get; set; }
         public int Age { get; set; }
-        public string Gender { get; set; }  // NEW
+        public string Gender { get; set; } = string.Empty;  // NEW
 
-        public Patient(string name, string password, int age, string gender, int? doctorId = null, int? id = null)
-            : base(name, password, id)
+        public string GenderDisplay
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(Gender))
+                    return "Unknown";
+
+                switch (Gender.ToUpper())
+                {
+                    case "M":
+                        return "Man";
+                    case "W":
+                        return "Woman";
+                    default:
+                        return Gender;
+                }
+            }
+        }
+
+        public Patient(string name, string password, int age, string gender, int? doctorId = null, 
+                      string email = "", string phone = "", string streetNumber = "", string street = "", 
+                      string city = "", string state = "", int? id = null)
+            : base(name, password, email, phone, streetNumber, street, city, state, id)
         {
             Age = age;
-            Gender = gender;                // NEW
+            Gender = gender;
             DoctorId = doctorId;
         }
 
         // Override: add patient-specific information
         public override string Summary()
         {
-            return $"{Id} | {Name} | Age:{Age} | Gender:{Gender} | Doctor:{DoctorId?.ToString() ?? "-"}";
+            return $"{Id} | {Name} | Age:{Age} | Gender:{GenderDisplay} | Doctor:{DoctorId?.ToString() ?? "-"}";
         }
     }
 }

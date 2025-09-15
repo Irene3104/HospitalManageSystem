@@ -48,6 +48,10 @@
     <Compile Include="Entities\Doctor.cs" />
     <Compile Include="Entities\Patient.cs" />
     <Compile Include="Entities\User.cs" />
+    <Compile Include="Extensions\StringExtensions.cs" />
+    <Compile Include="Menus\AdminMenu.cs" />
+    <Compile Include="Menus\DoctorMenu.cs" />
+    <Compile Include="Menus\PatientMenu.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\ConsoleUI.cs" />
@@ -56,10 +60,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Extensions\" />
-    <Folder Include="Menus\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Data\admins.txt" />
