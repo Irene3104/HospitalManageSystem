@@ -6,8 +6,19 @@ using DotnetHospital.Services;
 
 namespace DotnetHospital.Menus
 {
+    /// <summary>
+    /// Static class for doctor menu operations
+    /// Handles all doctor-specific functionality and user interface
+    /// </summary>
     public static class DoctorMenu
     {
+        /// <summary>
+        /// Displays and handles the main doctor menu
+        /// </summary>
+        /// <param name="currentDoctor">Currently logged in doctor</param>
+        /// <param name="patients">List of all patients</param>
+        /// <param name="doctors">List of all doctors</param>
+        /// <param name="appointments">List of all appointments</param>
         public static void ShowMenu(Doctor currentDoctor, List<Patient> patients, 
                                   List<Doctor> doctors, List<Appointment> appointments)
         {
@@ -120,7 +131,10 @@ namespace DotnetHospital.Menus
             ConsoleUI.Log($"Appointments for {doctor.DisplayName}", ConsoleColor.Green);
             Console.WriteLine();
             
-            var doctorAppointments = appointments.Where(a => a.DoctorId == doctor.Id).ToList();
+            // Anonymous method to find appointments for this doctor
+            var doctorAppointments = appointments.FindAll(delegate(Appointment a) { 
+                return a.DoctorId == doctor.Id; 
+            });
             
             if (doctorAppointments.Count == 0)
             {
@@ -222,7 +236,10 @@ namespace DotnetHospital.Menus
                 break;
             }
             
-            var patientAppointments = appointments.Where(a => a.PatientId == patientId && a.DoctorId == doctor.Id).ToList();
+            // Anonymous method to find appointments for specific patient and doctor
+            var patientAppointments = appointments.FindAll(delegate(Appointment a) { 
+                return a.PatientId == patientId && a.DoctorId == doctor.Id; 
+            });
             
             if (patientAppointments.Count == 0)
             {

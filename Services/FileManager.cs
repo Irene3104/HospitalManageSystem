@@ -7,17 +7,41 @@ using DotnetHospital.Entities;
 
 namespace DotnetHospital.Services
 {
-    // Service for loading and saving data to text files
+    /// <summary>
+    /// Service class for loading and saving data to text files
+    /// Handles file I/O operations for all entity types
+    /// </summary>
     public static class FileManager
     {
+        /// <summary>
+        /// Gets the data directory path (relative to project root)
+        /// </summary>
         public static string DataDir => Path.Combine(Directory.GetParent(AppDomain.CurrentDomain.BaseDirectory).Parent.Parent.FullName, "Data");
 
+        /// <summary>
+        /// Gets the patients data file path
+        /// </summary>
         public static string PatientsPath => Path.Combine(DataDir, "patients.txt");
+        
+        /// <summary>
+        /// Gets the doctors data file path
+        /// </summary>
         public static string DoctorsPath => Path.Combine(DataDir, "doctors.txt");
+        
+        /// <summary>
+        /// Gets the admins data file path
+        /// </summary>
         public static string AdminsPath => Path.Combine(DataDir, "admins.txt");
+        
+        /// <summary>
+        /// Gets the appointments data file path
+        /// </summary>
         public static string AppointmentsPath => Path.Combine(DataDir, "appointments.txt");
 
-        // Load all data files at once
+        /// <summary>
+        /// Loads all data files at once and returns as a tuple
+        /// </summary>
+        /// <returns>Tuple containing lists of patients, doctors, admins, and appointments</returns>
         public static Tuple<List<Patient>, List<Doctor>, List<Admin>, List<Appointment>> LoadAll()
         {
             Directory.CreateDirectory(DataDir);
@@ -25,7 +49,13 @@ namespace DotnetHospital.Services
                 LoadPatients(), LoadDoctors(), LoadAdmins(), LoadAppointments());
         }
 
-        // Save all entities back to files
+        /// <summary>
+        /// Saves all entities back to their respective files
+        /// </summary>
+        /// <param name="patients">Collection of patients to save</param>
+        /// <param name="doctors">Collection of doctors to save</param>
+        /// <param name="admins">Collection of admins to save</param>
+        /// <param name="appts">Collection of appointments to save</param>
         public static void SaveAll(
             IEnumerable<Patient> patients,
             IEnumerable<Doctor> doctors,
@@ -34,28 +64,35 @@ namespace DotnetHospital.Services
         {
             Directory.CreateDirectory(DataDir);
 
+            // Save patients data in CSV format
             File.WriteAllLines(PatientsPath, patients.Select(p =>
                 $"{p.Id},{p.Name},{p.Password},{p.Age},{p.Gender},{p.DoctorId},{p.Email},{p.Phone},{p.StreetNumber},{p.Street},{p.City},{p.State}"));
 
+            // Save doctors data in CSV format
             File.WriteAllLines(DoctorsPath, doctors.Select(d =>
                 $"{d.Id},{d.Name},{d.Password},{d.Specialty},{d.Email},{d.Phone},{d.StreetNumber},{d.Street},{d.City},{d.State}"));
 
+            // Save admins data in CSV format
             File.WriteAllLines(AdminsPath, admins.Select(a =>
                 $"{a.Id},{a.Name},{a.Password},{a.Email},{a.Phone},{a.StreetNumber},{a.Street},{a.City},{a.State}"));
 
-            // Persist appointments in simple format: id,patientId,doctorId,note
+            // Save appointments data in simple format: id,patientId,doctorId,note
             File.WriteAllLines(AppointmentsPath, appts.Select(a =>
                 $"{a.Id},{a.PatientId},{a.DoctorId},{a.Note}"));
         }
 
-        // Load methods for each entity type
+        #region Load Methods
+
+        /// <summary>
+        /// Loads patients from the patients.txt file
+        /// </summary>
+        /// <returns>List of Patient objects</returns>
         private static List<Patient> LoadPatients()
         {
-            return Load(PatientsPath, line =>
-            {
+            // Anonymous method for parsing patient data from CSV
+            return Load(PatientsPath, delegate(string line) {
                 var t = line.Split(',');
-                // Order in patients.txt:
-                // Id,Name,Password,Age,Gender,DoctorId,Email,Phone,StreetNumber,Street,City,State
+                // CSV format: Id,Name,Password,Age,Gender,DoctorId,Email,Phone,StreetNumber,Street,City,State
                 return new Patient(
                     name: t[1],
                     password: t[2],
@@ -73,13 +110,16 @@ namespace DotnetHospital.Services
         }
 
 
+        /// <summary>
+        /// Loads doctors from the doctors.txt file
+        /// </summary>
+        /// <returns>List of Doctor objects</returns>
         private static List<Doctor> LoadDoctors()
         {
-            return Load(DoctorsPath, line =>
-            {
+            // Anonymous method for parsing doctor data from CSV
+            return Load(DoctorsPath, delegate(string line) {
                 var t = line.Split(',');
-                // Order in doctors.txt:
-                // Id,Name,Password,Specialty,Email,Phone,StreetNumber,Street,City,State
+                // CSV format: Id,Name,Password,Specialty,Email,Phone,StreetNumber,Street,City,State
                 return new Doctor(
                     name: t[1],
                     password: t[2],
@@ -94,13 +134,16 @@ namespace DotnetHospital.Services
             });
         }
 
+        /// <summary>
+        /// Loads admins from the admins.txt file
+        /// </summary>
+        /// <returns>List of Admin objects</returns>
         private static List<Admin> LoadAdmins()
         {
-            return Load(AdminsPath, line =>
-            {
+            // Anonymous method for parsing admin data from CSV
+            return Load(AdminsPath, delegate(string line) {
                 var t = line.Split(',');
-                // Order in admins.txt:
-                // Id,Name,Password,Email,Phone,StreetNumber,Street,City,State
+                // CSV format: Id,Name,Password,Email,Phone,StreetNumber,Street,City,State
                 return new Admin(
                     name: t[1],
                     password: t[2],
@@ -113,10 +156,15 @@ namespace DotnetHospital.Services
                     id: int.Parse(t[0]));
             });
         }
+
+        /// <summary>
+        /// Loads appointments from the appointments.txt file
+        /// </summary>
+        /// <returns>List of Appointment objects</returns>
         private static List<Appointment> LoadAppointments()
         {
-            return Load(AppointmentsPath, line =>
-            {
+            // Anonymous method for parsing appointment data from CSV
+            return Load(AppointmentsPath, delegate(string line) {
                 if (line.StartsWith("#")) return default; // ignore header
 
                 var parts = line.Split(',');
@@ -131,8 +179,17 @@ namespace DotnetHospital.Services
             }).Where(a => a != null).ToList();
         }
 
-        // Generic loader with exception handling
-        // Generic loader with exception handling
+        #endregion
+
+        #region Generic Loader
+
+        /// <summary>
+        /// Generic loader with exception handling for parsing CSV files
+        /// </summary>
+        /// <typeparam name="T">Type of entity to load</typeparam>
+        /// <param name="path">File path to load from</param>
+        /// <param name="map">Function to map CSV line to entity object</param>
+        /// <returns>List of parsed entities</returns>
         private static List<T> Load<T>(string path, Func<string, T> map)
         {
             var list = new List<T>();
@@ -164,5 +221,6 @@ namespace DotnetHospital.Services
             return list;
         }
 
+        #endregion
     }
 }

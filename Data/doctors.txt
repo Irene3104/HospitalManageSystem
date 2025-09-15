@@ -1,4 +1,4 @@
 20001,Dr. Andrew Kim,pw20001,Pediatrics,dr.andrew@hospital.com,0411234567,123,Medical St,Sydney,
 20002,Dr. Sarah Eren,pw20002,Cardiology,dr.sarah@hospital.com,0422345678,456,Health Ave,Sydney,
 20003,Dr. Michael Smith,pw20003,Orthopedics,dr.michael@hospital.com,0433456789,789,Bone St,Sydney,
-
+20004,Steve Han,pw20004,Dental,sh@hospital.com,0403888999,50,Audley,Petersham,Sydney

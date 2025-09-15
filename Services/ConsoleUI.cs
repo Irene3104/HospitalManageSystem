@@ -2,11 +2,21 @@
 
 namespace DotnetHospital.Services
 {
+    /// <summary>
+    /// Static utility class for console user interface operations
+    /// Provides methods for headers, menus, messages, input handling, and table formatting
+    /// </summary>
     public static class ConsoleUI
     {
-        // ===== HEADER PANELS =====
+        #region Header Panels
 
-        // General header (with system title + optional section)
+        /// <summary>
+        /// Draws a bordered header with system title and optional section title
+        /// </summary>
+        /// <param name="systemTitle">Main system title</param>
+        /// <param name="sectionTitle">Optional section title</param>
+        /// <param name="systemColor">Color for system title</param>
+        /// <param name="sectionColor">Color for section title</param>
         public static void DrawHeader(string systemTitle, string sectionTitle = null,
                                       ConsoleColor systemColor = ConsoleColor.White,
                                       ConsoleColor sectionColor = ConsoleColor.Cyan)
@@ -15,30 +25,30 @@ namespace DotnetHospital.Services
 
             int innerWidth = Math.Max(systemTitle.Length, sectionTitle?.Length ?? 0) + 4;
 
-            // Top border (left aligned)
+            // Draw top border
             Console.Write('┌');
             Console.Write(new string('─', innerWidth));
             Console.WriteLine('┐');
 
-            // System title
+            // Draw system title
             Console.Write('│');
             WriteCentered(systemTitle, innerWidth, systemColor);
             Console.WriteLine('│');
 
             if (!string.IsNullOrEmpty(sectionTitle))
             {
-                // Separator
+                // Draw separator line
                 Console.Write('│');
                 Console.Write(new string('-', innerWidth));
                 Console.WriteLine('│');
 
-                // Section title
+                // Draw section title
                 Console.Write('│');
                 WriteCentered(sectionTitle, innerWidth, sectionColor);
                 Console.WriteLine('│');
             }
 
-            // Bottom border
+            // Draw bottom border
             Console.Write('└');
             Console.Write(new string('─', innerWidth));
             Console.WriteLine('┘');
@@ -46,7 +56,17 @@ namespace DotnetHospital.Services
             Console.WriteLine();
         }
 
-        // ===== MENUS =====
+        #endregion
+
+        #region Menu Operations
+
+        /// <summary>
+        /// Draws a numbered menu with options
+        /// </summary>
+        /// <param name="menuTitle">Title of the menu</param>
+        /// <param name="options">Array of menu options</param>
+        /// <param name="titleColor">Color for the menu title</param>
+        /// <param name="includeZeroExit">Whether to include "0. Exit" option</param>
         public static void DrawMenu(string menuTitle, string[] options, ConsoleColor titleColor = ConsoleColor.Green, bool includeZeroExit = true)
         {
             Console.ForegroundColor = titleColor;
@@ -64,7 +84,15 @@ namespace DotnetHospital.Services
             Console.WriteLine();
         }
 
-        // ===== MESSAGES =====
+        #endregion
+
+        #region Message Display
+
+        /// <summary>
+        /// Logs a message with specified color
+        /// </summary>
+        /// <param name="message">Message to display</param>
+        /// <param name="color">Color for the message</param>
         public static void Log(string message, ConsoleColor color = ConsoleColor.Gray)
         {
             var prev = Console.ForegroundColor;
@@ -73,17 +101,32 @@ namespace DotnetHospital.Services
             Console.ForegroundColor = prev;
         }
 
+        /// <summary>
+        /// Displays an error message in red
+        /// </summary>
+        /// <param name="message">Error message to display</param>
         public static void Error(string message)
         {
             Log("[ERROR] " + message, ConsoleColor.Red);
         }
 
+        /// <summary>
+        /// Displays a warning message in yellow
+        /// </summary>
+        /// <param name="message">Warning message to display</param>
         public static void Warning(string message)
         {
             Log("[WARNING] " + message, ConsoleColor.Yellow);
         }
 
-        // ===== INPUT HELPERS =====
+        #endregion
+
+        #region Input Helpers
+
+        /// <summary>
+        /// Reads password input with masked characters
+        /// </summary>
+        /// <returns>Password string entered by user</returns>
         public static string ReadPassword()
         {
             string pw = "";
@@ -94,7 +137,7 @@ namespace DotnetHospital.Services
                 {
                     if (pw.Length > 0)
                     {
-                        pw = pw.Substring(0, pw.Length - 1); // .NET Framework 호환
+                        pw = pw.Substring(0, pw.Length - 1); // .NET Framework compatible
                         Console.Write("\b \b");
                     }
                 }
@@ -108,6 +151,10 @@ namespace DotnetHospital.Services
             return pw;
         }
 
+        /// <summary>
+        /// Pauses execution and waits for user input
+        /// </summary>
+        /// <param name="msg">Message to display before pausing</param>
         public static void Pause(string msg = "Press any key to return...")
         {
             Console.WriteLine();
@@ -117,8 +164,18 @@ namespace DotnetHospital.Services
             Console.ReadKey(true);
         }
 
-        // ===== TABLE HELPERS =====
-        // Computes a flexible last-column width so that the header and rows fit the console width
+        #endregion
+
+        #region Table Helpers
+
+        /// <summary>
+        /// Computes flexible column width to fit console width
+        /// </summary>
+        /// <param name="fixedColumnsTotal">Total width of fixed columns</param>
+        /// <param name="separatorsCount">Number of column separators</param>
+        /// <param name="min">Minimum column width</param>
+        /// <param name="max">Maximum column width</param>
+        /// <returns>Calculated column width</returns>
         public static int ComputeFlexibleWidth(int fixedColumnsTotal, int separatorsCount, int min = 15, int max = 60)
         {
             int consoleWidth = 0;
@@ -131,7 +188,12 @@ namespace DotnetHospital.Services
             return Math.Min(max, Math.Max(min, remaining));
         }
 
-        // Safe truncation with ellipsis when content exceeds width
+        /// <summary>
+        /// Truncates text with ellipsis if it exceeds specified width
+        /// </summary>
+        /// <param name="text">Text to truncate</param>
+        /// <param name="width">Maximum width</param>
+        /// <returns>Truncated text with ellipsis if needed</returns>
         public static string Truncate(string text, int width)
         {
             if (string.IsNullOrEmpty(text)) return string.Empty;
@@ -141,7 +203,16 @@ namespace DotnetHospital.Services
             return text.Substring(0, width - 3) + "...";
         }
 
-        // ===== INTERNAL =====
+        #endregion
+
+        #region Internal Methods
+
+        /// <summary>
+        /// Writes centered text within specified width
+        /// </summary>
+        /// <param name="text">Text to center</param>
+        /// <param name="width">Total width for centering</param>
+        /// <param name="color">Color for the text</param>
         private static void WriteCentered(string text, int width, ConsoleColor color)
         {
             int pad = Math.Max(0, (width - text.Length) / 2);
@@ -154,5 +225,7 @@ namespace DotnetHospital.Services
             Console.ForegroundColor = prev;
             Console.Write(new string(' ', rightPad));
         }
+
+        #endregion
     }
 }

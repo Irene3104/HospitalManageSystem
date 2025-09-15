@@ -7,3 +7,4 @@ A0006,10001,20001,Regular health check
 A0007,10005,20002,Covid Test
 A0008,10006,20004,wisdom teeth
 A0040,10002,20001,Headache
+A2683,10003,20001,health check

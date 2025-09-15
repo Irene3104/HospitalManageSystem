@@ -6,8 +6,19 @@ using DotnetHospital.Services;
 
 namespace DotnetHospital.Menus
 {
+    /// <summary>
+    /// Static class for admin menu operations
+    /// Handles all administrator-specific functionality and user interface
+    /// </summary>
     public static class AdminMenu
     {
+        /// <summary>
+        /// Displays and handles the main administrator menu
+        /// </summary>
+        /// <param name="currentAdmin">Currently logged in administrator</param>
+        /// <param name="patients">List of all patients</param>
+        /// <param name="doctors">List of all doctors</param>
+        /// <param name="appointments">List of all appointments</param>
         public static void ShowMenu(Admin currentAdmin, List<Patient> patients, 
                                   List<Doctor> doctors, List<Appointment> appointments)
         {
@@ -130,8 +141,6 @@ namespace DotnetHospital.Menus
                 ConsoleUI.Pause();
                 return;
             }
-            
-            ConsoleUI.Pause();
         }
         
         private static void ShowAllPatients(List<Patient> patients, List<Doctor> doctors)

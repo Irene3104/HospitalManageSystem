@@ -5,18 +5,29 @@ using DotnetHospital.Entities;
 
 namespace DotnetHospital.Services
 {
-    // Service for generating unique IDs with specific rules
+    /// <summary>
+    /// Service class for generating unique IDs with specific rules for different entity types
+    /// Provides ID generation with predefined ranges for each user type
+    /// </summary>
     public static class IdGenerator
     {
         private static readonly Random Rng = new Random();
 
-        // Legacy method for backward compatibility (appointments, etc.)
+        /// <summary>
+        /// Legacy method for backward compatibility (appointments, etc.)
+        /// Generates random ID between 10000 and 99999999
+        /// </summary>
+        /// <returns>Random integer ID</returns>
         public static int NewId()
         {
             return Rng.Next(10000, 99999999); // always between 5 and 8 digits
         }
 
-        // Generate Patient ID: 1000X format (10001, 10002, 10003, ...)
+        /// <summary>
+        /// Generates Patient ID in 1000X format (10001, 10002, 10003, ...)
+        /// </summary>
+        /// <param name="existingPatients">Collection of existing patients for ID validation</param>
+        /// <returns>New unique patient ID</returns>
         public static int NewPatientId(IEnumerable<Patient> existingPatients)
         {
             var maxId = existingPatients?.Any() == true 
@@ -25,7 +36,11 @@ namespace DotnetHospital.Services
             return maxId + 1;
         }
 
-        // Generate Doctor ID: 2000X format (20001, 20002, 20003, ...)
+        /// <summary>
+        /// Generates Doctor ID in 2000X format (20001, 20002, 20003, ...)
+        /// </summary>
+        /// <param name="existingDoctors">Collection of existing doctors for ID validation</param>
+        /// <returns>New unique doctor ID</returns>
         public static int NewDoctorId(IEnumerable<Doctor> existingDoctors)
         {
             var maxId = existingDoctors?.Any() == true 
@@ -34,7 +49,11 @@ namespace DotnetHospital.Services
             return maxId + 1;
         }
 
-        // Generate Admin ID: 9000X format (90001, 90002, 90003, ...)
+        /// <summary>
+        /// Generates Admin ID in 9000X format (90001, 90002, 90003, ...)
+        /// </summary>
+        /// <param name="existingAdmins">Collection of existing admins for ID validation</param>
+        /// <returns>New unique admin ID</returns>
         public static int NewAdminId(IEnumerable<Admin> existingAdmins)
         {
             var maxId = existingAdmins?.Any() == true 
@@ -43,13 +62,20 @@ namespace DotnetHospital.Services
             return maxId + 1;
         }
 
-        // Generate password based on ID: "pw" + ID
+        /// <summary>
+        /// Generates password based on ID: "pw" + ID
+        /// </summary>
+        /// <param name="id">User ID to generate password for</param>
+        /// <returns>Password string in format "pw{id}"</returns>
         public static string GeneratePassword(int id)
         {
             return $"pw{id}";
         }
 
-        // Generate Appointment ID: A0001, A0002, A0003, ... format
+        /// <summary>
+        /// Generates Appointment ID in A0001, A0002, A0003, ... format
+        /// </summary>
+        /// <returns>New appointment ID string</returns>
         public static string NewAppointmentId()
         {
             // For now, generate a random A000X format
